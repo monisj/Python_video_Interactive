@@ -1,55 +1,94 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QPushButton
-from pytube import YouTube
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-class YouTubeDownloader(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.title = 'YouTube Downloader'
-        self.left = 100
-        self.top = 100
-        self.width = 400
-        self.height = 150
-        self.initUI()
 
-    def initUI(self):
-        self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(777, 452)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout.setObjectName("gridLayout")
+        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton.setObjectName("pushButton")
+        self.gridLayout.addWidget(self.pushButton, 8, 0, 1, 1)
+        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit.setInputMask("")
+        self.lineEdit.setText("")
+        self.lineEdit.setObjectName("lineEdit")
+        self.gridLayout.addWidget(self.lineEdit, 2, 0, 1, 1)
+        self.comboBox = QtWidgets.QComboBox(self.centralwidget)
+        self.comboBox.setObjectName("comboBox")
 
-        url_label = QLabel('Enter the URL of the YouTube video:', self)
-        url_label.move(20, 20)
+        
 
-        self.url_input = QLineEdit(self)
-        self.url_input.move(20, 40)
-        self.url_input.resize(360, 20)
+        
+        self.gridLayout.addWidget(self.comboBox, 7, 0, 1, 1)
+        self.gridLayout_2 = QtWidgets.QGridLayout()
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.radioButton_2 = QtWidgets.QRadioButton(self.centralwidget)
+        self.radioButton_2.setObjectName("radioButton_2")
+        self.gridLayout_2.addWidget(self.radioButton_2, 0, 1, 1, 1)
+        self.radioButton = QtWidgets.QRadioButton(self.centralwidget)
+        self.radioButton.setObjectName("radioButton")
+        self.gridLayout_2.addWidget(self.radioButton, 0, 0, 1, 1)
+        self.gridLayout.addLayout(self.gridLayout_2, 4, 0, 1, 1)
 
-        download_button = QPushButton('Download', self)
-        download_button.move(20, 70)
-        download_button.clicked.connect(self.download_video)
 
-        self.download_message = QLabel('', self)
-        self.download_message.move(20, 100)
+        #Select Combination
+        
+        self.radioButton.toggled.connect(self.video)
+        self.radioButton_2.toggled.connect(self.audio)
+        
+        
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setObjectName("label")
+        self.verticalLayout.addWidget(self.label)
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem)
+        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 777, 25))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
 
-        self.show()
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def download_video(self):
-        # Get the URL of the YouTube video from the input field
-        url = self.url_input.text()
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "Youtube Downloader"))
+        self.pushButton.setText(_translate("MainWindow", "Download Content"))
+        self.lineEdit.setPlaceholderText(_translate("MainWindow", "Enter Youtube Video URL"))
+        self.radioButton_2.setText(_translate("MainWindow", "MP3"))
+        self.radioButton.setText(_translate("MainWindow", "Video"))
+        self.label.setText(_translate("MainWindow", "Link"))
 
-        # Create a YouTube object and extract video streams
-        video = YouTube(url)
-        streams = video.streams
+    def video(self,selected):
+        if selected:
+            self.comboBox.clear()
+            resolution=["Select Resolution","Highest","1080p","720p","480p","360p","240p","144p"]
+            self.comboBox.addItems(resolution)
 
-        # Select the highest resolution stream
-        high_resolution_stream = streams.get_highest_resolution()
+    def audio(self,selected):
+        if selected:
+            self.comboBox.clear()
+            resolution=["Select Audio Quality","Highest","320Kpbs","240Kpbs","192Kpbs"]
+            self.comboBox.addItems(resolution)
 
-        # Download the video to the current working directory
-        high_resolution_stream.download()
 
-        # Display a message to confirm that the video has been downloaded
-        self.download_message.setText('Video downloaded successfully!')
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    youtube_downloader = YouTubeDownloader()
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
     sys.exit(app.exec_())
