@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QPixmap
 
 
 class Ui_MainWindow(object):
@@ -46,6 +47,10 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setObjectName("label")
+        self.pixmap = QPixmap('image.png') #Adding image to label
+        self.label.setPixmap(self.pixmap) #Set Image
+        self.label.resize(self.pixmap.width(),
+                          self.pixmap.height())
         self.verticalLayout.addWidget(self.label)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
@@ -69,7 +74,7 @@ class Ui_MainWindow(object):
         self.lineEdit.setPlaceholderText(_translate("MainWindow", "Enter Youtube Video URL"))
         self.radioButton_2.setText(_translate("MainWindow", "MP3"))
         self.radioButton.setText(_translate("MainWindow", "Video"))
-        self.label.setText(_translate("MainWindow", "Link"))
+        #self.label.setText(_translate("MainWindow", "Link"))
 
     def video(self,selected):
         if selected:
