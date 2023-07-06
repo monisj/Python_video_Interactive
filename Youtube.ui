@@ -15,26 +15,6 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="8" column="0">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Download Content</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLineEdit" name="lineEdit">
-      <property name="inputMask">
-       <string/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="placeholderText">
-       <string>Enter Youtube Video URL</string>
-      </property>
-     </widget>
-    </item>
     <item row="7" column="0">
      <widget class="QComboBox" name="comboBox"/>
     </item>
@@ -56,12 +36,35 @@
       </item>
      </layout>
     </item>
+    <item row="8" column="0">
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>Download Content</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLineEdit" name="lineEdit">
+      <property name="inputMask">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="placeholderText">
+       <string>Enter Youtube Video URL</string>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Link</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
@@ -88,7 +91,7 @@
      <x>0</x>
      <y>0</y>
      <width>777</width>
-     <height>25</height>
+     <height>17</height>
     </rect>
    </property>
   </widget>
