@@ -1,5 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
+import subprocess
+import sys
+import pytube
 
 
 class Ui_MainWindow(object):
@@ -47,6 +50,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setObjectName("label")
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.pixmap = QPixmap('image.png') #Adding image to label
         self.label.setPixmap(self.pixmap) #Set Image
         self.label.resize(self.pixmap.width(),
@@ -75,6 +79,18 @@ class Ui_MainWindow(object):
         self.radioButton_2.setText(_translate("MainWindow", "MP3"))
         self.radioButton.setText(_translate("MainWindow", "Video"))
         #self.label.setText(_translate("MainWindow", "Link"))
+        self.pushButton.clicked.connect(self.download)
+
+    def download(self):
+        text=self.lineEdit.text()
+        if text=="":
+            print("Enter Link")
+        else:
+            print(self.comboBox.currentText())
+            video=pytube.YouTube(text)
+            video.streams.first().download() #This controls the video quality of the stream
+            video.streams.filter(progressive=True,file_extension='mp4')#Use this to further filter out the video
+            video.streams.get_by_resolution(f"{self.comboBox.currentText()}").download()
 
     def video(self,selected):
         if selected:
