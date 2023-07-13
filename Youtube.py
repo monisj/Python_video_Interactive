@@ -1,9 +1,10 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
-import subprocess
+from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips
 import sys
 import pytube
-
+import os
+res=[]
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -11,6 +12,7 @@ class Ui_MainWindow(object):
         MainWindow.resize(777, 452)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        MainWindow.setWindowIcon(QtGui.QIcon('image.png'))
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
@@ -88,15 +90,35 @@ class Ui_MainWindow(object):
         else:
             print(self.comboBox.currentText())
             video=pytube.YouTube(text)
-            video.streams.first().download() #This controls the video quality of the stream
-            video.streams.filter(progressive=True,file_extension='mp4')#Use this to further filter out the video
-            video.streams.get_by_resolution(f"{self.comboBox.currentText()}").download()
+            video.streams.filter(res=f"{self.comboBox.currentText()}").first().download(filename="video.mp4")
+            audio = video.streams.filter(only_audio=True)
+            audio[0].download(filename="audio.mp4")
+            # combine the video clip with the audio clip
+            video_clip = VideoFileClip("video.mp4")
+            audio_clip = AudioFileClip("audio.mp4")
+            final_clip = video_clip.set_audio(audio_clip)
+            final_clip.write_videofile(f"{video.title}" + ".mp4")
+            os.remove("video.mp4")
+            os.remove("audio.mp4")
 
     def video(self,selected):
         if selected:
-            self.comboBox.clear()
-            resolution=["Select Resolution","Highest","1080p","720p","480p","360p","240p","144p"]
-            self.comboBox.addItems(resolution)
+            text=self.lineEdit.text()
+            if text=="":
+                pass
+                res.clear()
+                self.comboBox.clear()
+            else:
+                video=pytube.YouTube(text)
+                for stream in video.streams:
+                    if(stream.resolution in res):
+                        pass
+                    elif(stream.resolution == None):
+                        pass
+                    else:
+                        res.append(stream.resolution)
+                self.comboBox.clear()
+                self.comboBox.addItems(res)  
 
     def audio(self,selected):
         if selected:
