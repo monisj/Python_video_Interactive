@@ -1,10 +1,41 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow, QDialog, QLabel, QGridLayout, QWidget, QProgressBar
 from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips
 import sys
 import pytube
 import os
 res=[]
+
+class Load_Window(QDialog):
+    
+    def __init__(self):
+        QDialog.__init__(self)
+        self.setGeometry(0,0,500,200)
+        self.setWindowTitle("Load Window")
+        #self.setWindowFlag(Qt.FramelessWindowHint)
+        title = QLabel("I am the Load window", self)
+        self.pbar = QProgressBar(self)
+        
+        self.pbar.setGeometry(30, 40, 200, 25)
+
+        self.label_1 = QLabel('no title bar', self)
+  
+        # moving position
+        self.label_1.move(100, 100)
+  
+        # setting up border and background color
+        self.label_1.setStyleSheet("background-color: lightgreen;border: 3px solid green")
+        
+        title.setAlignment(QtCore.Qt.AlignCenter)
+        title.move(200,200)
+        
+
+    def progressUpdate(self):
+        self.show()
+        self.pbar.setValue(100)
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -69,6 +100,7 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -109,6 +141,9 @@ class Ui_MainWindow(object):
                 res.clear()
                 self.comboBox.clear()
             else:
+                LoadWin = Load_Window()
+                #LoadWin.show()
+                LoadWin.progressUpdate()
                 video=pytube.YouTube(text)
                 for stream in video.streams:
                     if(stream.resolution in res):
@@ -119,6 +154,7 @@ class Ui_MainWindow(object):
                         res.append(stream.resolution)
                 self.comboBox.clear()
                 self.comboBox.addItems(res)  
+                LoadWin.close()
 
     def audio(self,selected):
         if selected:
@@ -134,4 +170,5 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
+    
     sys.exit(app.exec_())
