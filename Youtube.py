@@ -7,7 +7,7 @@ import sys
 import pytube
 import os
 res=[]
-
+audio_res=[]
 class Load_Window(QDialog):
     
     def __init__(self):
@@ -116,22 +116,34 @@ class Ui_MainWindow(object):
         self.pushButton.clicked.connect(self.download)
 
     def download(self):
-        text=self.lineEdit.text()
-        if text=="":
-            print("Enter Link")
-        else:
-            print(self.comboBox.currentText())
-            video=pytube.YouTube(text)
-            video.streams.filter(res=f"{self.comboBox.currentText()}").first().download(filename="video.mp4")
-            audio = video.streams.filter(only_audio=True)
-            audio[0].download(filename="audio.mp4")
-            # combine the video clip with the audio clip
-            video_clip = VideoFileClip("video.mp4")
-            audio_clip = AudioFileClip("audio.mp4")
-            final_clip = video_clip.set_audio(audio_clip)
-            final_clip.write_videofile(f"{video.title}" + ".mp4")
-            os.remove("video.mp4")
-            os.remove("audio.mp4")
+        if self.radioButton.isChecked():
+                text=self.lineEdit.text()
+                if text=="":
+                    print("Enter Link")
+                else:
+                    #print(self.comboBox.currentText())
+                    video=pytube.YouTube(text)
+                    video.streams.filter(res=f"{self.comboBox.currentText()}").first().download(filename="video.mp4")
+                    audio = video.streams.filter(only_audio=True)
+                    audio[0].download(filename="audio.mp4")
+                    # combine the video clip with the audio clip
+                    video_clip = VideoFileClip("video.mp4")
+                    audio_clip = AudioFileClip("audio.mp4")
+                    final_clip = video_clip.set_audio(audio_clip)
+                    final_clip.write_videofile(f"{video.title}" + ".mp4")
+                    os.remove("video.mp4")
+                    os.remove("audio.mp4")
+        elif self.radioButton_2.isChecked():
+            text=self.lineEdit.text()
+            if text=="":
+                print("Enter Link")
+            else:
+                print(self.comboBox.currentText())
+                audio=pytube.YouTube(text)
+                video=pytube.YouTube(text)
+                audio = audio.streams.filter(only_audio=True,abr=f"{self.comboBox.currentText()}")
+                audio[0].download(filename=f"{video.title}" + ".mp3")
+                
 
     def video(self,selected):
         if selected:
@@ -158,9 +170,25 @@ class Ui_MainWindow(object):
 
     def audio(self,selected):
         if selected:
-            self.comboBox.clear()
-            resolution=["Select Audio Quality","Highest","320Kpbs","240Kpbs","192Kpbs"]
-            self.comboBox.addItems(resolution)
+            text=self.lineEdit.text()
+            if text=="":
+                pass
+                res.clear()
+                self.comboBox.clear()
+            else:
+                yt = pytube.YouTube(text)
+                best_audio_stream = yt.streams.filter(only_audio=True).all()
+                
+                for stream in best_audio_stream:
+                    if(stream.abr in audio_res):
+                        pass
+                    elif(stream.abr== None):
+                        pass
+                    else:
+                        audio_res.append(stream.abr)
+                print(audio_res)    
+                self.comboBox.clear()
+                self.comboBox.addItems(audio_res)
 
 
 if __name__ == "__main__":
